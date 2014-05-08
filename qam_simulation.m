@@ -43,7 +43,6 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
 % --- Executes just before qam_simulation is made visible.
 function qam_simulation_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
