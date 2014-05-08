@@ -8,6 +8,5 @@ n = 64;                     % Liczba bitów do przes³ania
 random_bits = randi([0 1], 1, n);  %wygenerowanie losowych bitow
 
 
-
 end
 
