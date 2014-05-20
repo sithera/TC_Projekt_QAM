@@ -22,7 +22,7 @@ function varargout = qam_simulation(varargin)
 
 % Edit the above text to modify the response to help qam_simulation
 
-% Last Modified by GUIDE v2.5 08-May-2014 17:46:52
+% Last Modified by GUIDE v2.5 20-May-2014 11:06:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,8 +55,6 @@ function qam_simulation_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 %%%background image
-axes(handles.background);
-imshow('background.jpg');
 axes(handles.bits);
 handles.slider1 = 1;
 set(handles.wartosc_suwaka,'String',1);
@@ -135,14 +133,6 @@ axis([0 20 0 1]);
 
 % Hint: place code in OpeningFcn to populate bits
 
-
-% --- Executes during object creation, after setting all properties.
-function background_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to background (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: place code in OpeningFcn to populate background
 
 
 % --- Executes on slider movement.
