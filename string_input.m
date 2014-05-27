@@ -15,4 +15,4 @@ end
 bit_array = word_out;
 end
 
-%received_array = char(bin2dec(reshape(char('0' + word_out),8,[]).'))' % odwrotna konwersja
+
