@@ -22,7 +22,7 @@ function varargout = qam_simulation(varargin)
 
 % Edit the above text to modify the response to help qam_simulation
 
-% Last Modified by GUIDE v2.5 20-May-2014 11:06:31
+% Last Modified by GUIDE v2.5 26-May-2014 19:53:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,7 @@ handles.output = hObject;
 %%%background image
 axes(handles.bits);
 handles.slider1 = 1;
+handles.suwak = 1;
 set(handles.wartosc_suwaka,'String',1);
 
 % Update handles structure
@@ -83,8 +84,17 @@ function wprowadz_tekst_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 axes(handles.bits);
+set(handles.otrzymany_tekst,'String','');
+set(handles.BER_GUI,'String','');
+set(handles.ERR_COUNT,'String','');
 bit_array = string_input;
+handles.bit_array = bit_array;
+handles.control = 1;
+
 set(handles.wyslany_tekst,'String',char(bin2dec(reshape(char('0' + bit_array),8,[]).'))');
+set(handles.otrzymany_tekst,'String','');
+set(handles.BER_GUI,'String','');
+set(handles.ERR_COUNT,'String','');
 
 stem(bit_array,'filled');
 set(gca,'XTick', [0:1:length(bit_array)], 'YTick', [0:1], 'XLim', [1 length(bit_array)], 'YLim', [0 1]);    
@@ -98,6 +108,8 @@ axis([0 20 0 1]);
 else axis([0 length(bit_array) 0 1]); 
 end
 
+guidata(hObject, handles); 
+
 
 
 
@@ -108,11 +120,17 @@ function random_bits_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 axes(handles.bits);
 
-bit = bit_generate;
+set(handles.wyslany_tekst,'String','');
+set(handles.otrzymany_tekst,'String','');
+set(handles.BER_GUI,'String','');
+set(handles.ERR_COUNT,'String','');
 
+bit_array = bit_generate;
+handles.bit_array = bit_array;
+handles.control = 0;
 set(handles.wyslany_tekst,'String',' ');
-stem(bit,'filled');
-set(gca,'XTick', [0:1:length(bit)], 'YTick', [0:1], 'XLim', [1 length(bit)], 'YLim', [0 1]);    
+stem(bit_array,'filled');
+set(gca,'XTick', [0:1:length(bit_array)], 'YTick', [0:1], 'XLim', [1 length(bit_array)], 'YLim', [0 1]);    
 set(gca,'XGrid', 'on');
 title(handles.bits,'Wygenerowane bity (pierwsze 20)');
 xlabel(handles.bits,'Numer bitu');
@@ -167,11 +185,25 @@ function symuluj_Callback(hObject, eventdata, handles)
 % hObject    handle to symuluj (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-test();
+[err_sum, array_recived] = qamm(handles.suwak,handles.bit_array);
+ber = err_sum/length(handles.bit_array);
+set(handles.BER_GUI,'String',['Bit Error Rate: ' num2str(ber)]);
+if (handles.control == 1)
+set(handles.otrzymany_tekst,'String',string_output(array_recived));
+end
+set(handles.ERR_COUNT,'String',['Liczba przek³amanych bitów: ' num2str(err_sum)]);
+wykresy();
 
 
 % --- Executes during object creation, after setting all properties.
 function wyslany_tekst_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to wyslany_tekst (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function otrzymany_tekst_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to otrzymany_tekst (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
