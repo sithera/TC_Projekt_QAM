@@ -191,7 +191,7 @@ set(handles.BER_GUI,'String',['Bit Error Rate: ' num2str(ber)]);
 if (handles.control == 1)
 set(handles.otrzymany_tekst,'String',string_output(array_recived));
 end
-set(handles.ERR_COUNT,'String',['Liczba przek³amanych bitów: ' num2str(err_sum)]);
+set(handles.ERR_COUNT,'String',['Liczba przek³amanych bitów: ' num2str(err_sum) '/' num2str(length(handles.bit_array)) ]);
 wykresy();
 
 
