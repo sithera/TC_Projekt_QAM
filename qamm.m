@@ -17,7 +17,7 @@ P=(numel(data))/4;
 fc=1000;
 fs=100000;
 f0=fc/fs;
-t=1:100;
+t=0:99;
 S=[];
 
 for i=1:1:P        % Modulacja
@@ -43,14 +43,12 @@ setappdata(0,'SS',SS);
 
 
 for i=1:1:P    %dolno
-    for t=1:1:100
-        Scos((i-1)*100+t)=SS((i-1)*100+t).*cos(2*pi*f0*t);
-        Ssin((i-1)*100+t)=SS((i-1)*100+t).*sin(2*pi*f0*t);
-    end
+    Scos((i-1)*100+t+1)=SS((i-1)*100+t+1).*cos(2*pi*f0*t);
+    Ssin((i-1)*100+t+1)=SS((i-1)*100+t+1).*sin(2*pi*f0*t);
 end
 %BI = Scos;
 %BQ = Ssin;
-[b,a]=butter(3,0.1);
+[b,a]=butter(4,0.1);
 BI=2.*filter(b,a,Scos);
 BQ=2.*filter(b,a,Ssin);
 %subplot(3,1,2); plot(Scos) title('syg*cos')
@@ -60,7 +58,7 @@ IdSr=[ ];                      %DEModulacja
 QdSr=[ ];
 for i=1:1:P    %dolno
     IdSr(i)= mean(BI(i+(((i-1)*100)):(i*100)));
-    QdSr(i)= mean(BI(i+(((i-1)*100)):(i*100)));
+    QdSr(i)= mean(BQ(i+(((i-1)*100)):(i*100)));
 end
 Id=[];
 Qd=[];
@@ -76,13 +74,13 @@ for i=1:1:P
     end
     
     if QdSr(i)>=2
-        Qd(i)=3;
-    elseif QdSr(i)<2 && QdSr(i)>=0
-        Qd(i)=1;
-    elseif QdSr(i)>= -2 && QdSr(i)<0
-        Qd(i)=-1;
-    else QdSr(i)< -2
         Qd(i)=-3;
+    elseif QdSr(i)<2 && QdSr(i)>=0
+        Qd(i)=-1;
+    elseif QdSr(i)>= -2 && QdSr(i)<0
+        Qd(i)=1;
+    else QdSr(i)< -2
+        Qd(i)=3;
     end
     
 end;
