@@ -22,16 +22,16 @@ function varargout = wykresy(varargin)
 
 % Edit the above text to modify the response to help wykresy
 
-% Last Modified by GUIDE v2.5 20-May-2014 17:47:38
+% Last Modified by GUIDE v2.5 27-May-2014 00:44:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @wykresy_OpeningFcn, ...
-                   'gui_OutputFcn',  @wykresy_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @wykresy_OpeningFcn, ...
+    'gui_OutputFcn',  @wykresy_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -53,15 +53,22 @@ function wykresy_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for wykresy
 handles.output = hObject;
+axes(handles.axes1);
+S = getappdata(0,'S');
+max_freq = getappdata(0,'max_freq');
+plot(S)
+grid off
+xlabel('Frequency [Hz]')
+ylabel('Amplitude')
+title('16-QAM Modulated Signal')
+axis([0 max_freq -5 5 ])   %skala
 
 % Update handles structure
 guidata(hObject, handles);
 
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using wykresy.
-if strcmp(get(hObject,'Visible'),'off')
-    plot(rand(5));
-end
+
 
 % UIWAIT makes wykresy wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -84,69 +91,49 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 axes(handles.axes1);
 cla;
+S = getappdata(0,'S');
+SS = getappdata(0,'SS');
+Sodt = getappdata(0,'Sodt');
+max_freq = getappdata(0,'max_freq');
 
 popup_sel_index = get(handles.popupmenu1, 'Value');
 switch popup_sel_index
     case 1
-        plot(rand(5));
+        plot(S)
+        grid off
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+        title('16-QAM Modulated Signal')
+        axis([0 max_freq -5 5 ])   %skala
     case 2
-        plot(sin(1:0.01:25.99));
+        plot(SS)
+        grid off
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+        title('16-QAM Modulated Signal')
+        axis([0 max_freq -5 5 ])   %skala
     case 3
-        bar(1:.5:10);
+        plot(Sodt)
+        grid off
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+        title('16-QAM Modulated Signal')
+        axis([0 max_freq -5 5 ])   %skala
     case 4
-        plot(membrane);
-    case 5
-        surf(peaks);
+        k=4;
+        Eb_N0_dB  = [0:15];
+        theoryBer = (1/k)*3/2*erfc(sqrt(k*0.1*(10.^(Eb_N0_dB/10))));
+        semilogy(Eb_N0_dB,theoryBer,'bs-','LineWidth',2);
+        hold on
+        %semilogy(Eb_N0_dB,ber,'mx-','LineWidth',2);
+        axis([0 15 10^-6 1])
+        grid on
+        legend('theory');
+        xlabel('Eb/No [dB]')
+        ylabel('Bit Error Rate')
+        title('Bit error probability curve for 16-QAM modulation')
+        hold off
 end
-
-
-% --------------------------------------------------------------------
-function FileMenu_Callback(hObject, eventdata, handles)
-% hObject    handle to FileMenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-function OpenMenuItem_Callback(hObject, eventdata, handles)
-% hObject    handle to OpenMenuItem (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-file = uigetfile('*.fig');
-if ~isequal(file, 0)
-    open(file);
-end
-
-% --------------------------------------------------------------------
-function PrintMenuItem_Callback(hObject, eventdata, handles)
-% hObject    handle to PrintMenuItem (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-printdlg(handles.figure1)
-
-% --------------------------------------------------------------------
-function CloseMenuItem_Callback(hObject, eventdata, handles)
-% hObject    handle to CloseMenuItem (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-selection = questdlg(['Close ' get(handles.figure1,'Name') '?'],...
-                     ['Close ' get(handles.figure1,'Name') '...'],...
-                     'Yes','No','Yes');
-if strcmp(selection,'No')
-    return;
-end
-
-delete(handles.figure1)
-
-
-% --- Executes on selection change in popupmenu1.
-function popupmenu1_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = get(hObject,'String') returns popupmenu1 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu1
 
 
 % --- Executes during object creation, after setting all properties.
@@ -158,7 +145,15 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 % Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-     set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','white');
 end
 
-set(hObject, 'String', {'plot(rand(5))', 'plot(sin(1:0.01:25))', 'bar(1:.5:10)', 'plot(membrane)', 'surf(peaks)'});
+
+% --- Executes on selection change in popupmenu1.
+function popupmenu1_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu1
