@@ -22,7 +22,7 @@ function varargout = qam_simulation(varargin)
 
 % Edit the above text to modify the response to help qam_simulation
 
-% Last Modified by GUIDE v2.5 26-May-2014 19:53:00
+% Last Modified by GUIDE v2.5 31-May-2014 22:30:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,6 +59,7 @@ axes(handles.bits);
 handles.slider1 = 1;
 handles.suwak = 1;
 set(handles.wartosc_suwaka,'String',1);
+handles.wart = 4;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -125,11 +126,11 @@ set(handles.otrzymany_tekst,'String','');
 set(handles.BER_GUI,'String','');
 set(handles.ERR_COUNT,'String','');
 
-bit_array = bit_generate;
+bit_array = bit_generate(handles.wart,0);
 handles.bit_array = bit_array;
 handles.control = 0;
 set(handles.wyslany_tekst,'String',' ');
-stem(bit_array,'filled');
+stem(bit_array(1:20),'filled');
 set(gca,'XTick', [0:1:length(bit_array)], 'YTick', [0:1], 'XLim', [1 length(bit_array)], 'YLim', [0 1]);    
 set(gca,'XGrid', 'on');
 title(handles.bits,'Wygenerowane bity (pierwsze 20)');
@@ -185,13 +186,23 @@ function symuluj_Callback(hObject, eventdata, handles)
 % hObject    handle to symuluj (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[err_sum, array_recived] = qamm(handles.suwak,handles.bit_array);
+[err_sum, array_recived] = qamm(handles.suwak,handles.bit_array,handles.wart);
 ber = err_sum/length(handles.bit_array);
 set(handles.BER_GUI,'String',['Bit Error Rate: ' num2str(ber)]);
 if (handles.control == 1)
 set(handles.otrzymany_tekst,'String',string_output(array_recived));
 end
 set(handles.ERR_COUNT,'String',['Liczba przek³amanych bitów: ' num2str(err_sum) '/' num2str(length(handles.bit_array)) ]);
+
+%%% BER %%%
+for snr=1:15
+    ber_sim(snr) = qamm_ber(snr,handles.bit_array_ber,handles.wart)/length(handles.bit_array_ber);
+end
+
+setappdata(0,'ber_sim',ber_sim);
+setappdata(0,'wart',handles.wart);
+
+
 wykresy();
 
 
@@ -207,3 +218,49 @@ function otrzymany_tekst_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to otrzymany_tekst (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on selection change in rodzaj_modulacji_popup.
+function rodzaj_modulacji_popup_Callback(hObject, eventdata, handles)
+% hObject    handle to rodzaj_modulacji_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns rodzaj_modulacji_popup contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from rodzaj_modulacji_popup
+
+if get(handles.rodzaj_modulacji_popup, 'Value') == 1
+    handles.wart = 4;
+elseif get(handles.rodzaj_modulacji_popup, 'Value') == 2
+    handles.wart = 16;
+else
+    handles.wart = 64;
+end
+
+
+
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function rodzaj_modulacji_popup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to rodzaj_modulacji_popup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in losuj_BER.
+function losuj_BER_Callback(hObject, eventdata, handles)
+% hObject    handle to losuj_BER (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+bit_array_ber = bit_generate(handles.wart,1);
+handles.bit_array_ber = bit_array_ber;
+
+guidata(hObject,handles);
