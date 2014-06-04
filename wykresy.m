@@ -56,12 +56,12 @@ handles.output = hObject;
 axes(handles.axes1);
 S = getappdata(0,'S');
 max_freq = getappdata(0,'max_freq');
-plot(S)
-grid off
-xlabel('Frequency [Hz]')
-ylabel('Amplitude')
-title('16-QAM Modulated Signal')
-axis([0 max_freq -5 5 ])   %skala
+plot(S);
+grid off;
+xlabel('Frequency [Hz]');
+ylabel('Amplitude');
+title('16-QAM Modulated Signal');
+axis([0 max_freq -10 10 ])   %skala
 
 % Update handles structure
 guidata(hObject, handles);
@@ -83,57 +83,6 @@ function varargout = wykresy_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
-
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-axes(handles.axes1);
-cla;
-S = getappdata(0,'S');
-SS = getappdata(0,'SS');
-Sodt = getappdata(0,'Sodt');
-max_freq = getappdata(0,'max_freq');
-
-popup_sel_index = get(handles.popupmenu1, 'Value');
-switch popup_sel_index
-    case 1
-        plot(S)
-        grid off
-        xlabel('Frequency [Hz]')
-        ylabel('Amplitude')
-        title('16-QAM Modulated Signal')
-        axis([0 max_freq -5 5 ])   %skala
-    case 2
-        plot(SS)
-        grid off
-        xlabel('Frequency [Hz]')
-        ylabel('Amplitude')
-        title('16-QAM Modulated Signal')
-        axis([0 max_freq -5 5 ])   %skala
-    case 3
-        plot(Sodt)
-        grid off
-        xlabel('Frequency [Hz]')
-        ylabel('Amplitude')
-        title('16-QAM Modulated Signal')
-        axis([0 max_freq -5 5 ])   %skala
-    case 4
-        k=4;
-        Eb_N0_dB  = [0:15];
-        theoryBer = (1/k)*3/2*erfc(sqrt(k*0.1*(10.^(Eb_N0_dB/10))));
-        semilogy(Eb_N0_dB,theoryBer,'bs-','LineWidth',2);
-        hold on
-        %semilogy(Eb_N0_dB,ber,'mx-','LineWidth',2);
-        axis([0 15 10^-6 1])
-        grid on
-        legend('theory');
-        xlabel('Eb/No [dB]')
-        ylabel('Bit Error Rate')
-        title('Bit error probability curve for 16-QAM modulation')
-        hold off
-end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -157,3 +106,63 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu1
+
+axes(handles.axes1);
+cla;
+
+max_freq = getappdata(0,'max_freq');
+ber_sim = getappdata(0,'ber_sim');
+wart = getappdata(0,'wart');
+
+popup_sel_index = get(handles.popupmenu1, 'Value');
+switch popup_sel_index
+    case 1
+        grid off
+        S = getappdata(0,'S');
+        plot(S);
+        xlabel('Frequency [Hz]');
+        ylabel('Amplitude');
+        title('16-QAM Modulated Signal');
+        axis([0 max_freq -10 10 ]) ;  %skala
+    case 2
+        grid off
+        SS = getappdata(0,'SS');
+        plot(SS);
+        xlabel('Frequency [Hz]');
+        ylabel('Amplitude');
+        title('16-QAM Modulated Signal + Noise');
+        axis([0 max_freq -10 10 ])   %skala
+    case 3
+        grid off
+        Sodt = getappdata(0,'Sodt');
+        plot(Sodt);
+        xlabel('Frequency [Hz]');
+        ylabel('Amplitude');
+        title('16-QAM Demodulated Signal');
+        axis([0 max_freq -10 10 ])   %skala
+    case 4
+        k=log2(wart);
+        EbNodB=1:15;
+        EbNo=10.^(EbNodB/10);
+        M=2^k;
+        x=sqrt(3*k*EbNo/(M-1));
+        Pb=(4/k)*(1-1/sqrt(M))*(1/2)*erfc(x/sqrt(2));
+        semilogy(EbNodB,Pb,'bs-','LineWidth',2);
+        hold on
+        semilogy(EbNodB,ber_sim,'rx-','LineWidth',2);
+        grid on
+        axis([0 15 10^-6 1]);
+        legend('theory', 'simulation');
+        xlabel('Eb/No, dB');
+        ylabel('Bit Error Rate');
+        title('Bit error probability curve for 16-QAM modulation');
+        hold off
+    case 5
+        setappdata(0,'wykres',handles.axes1);
+        BER();
+    case 6
+        setappdata(0,'wykres',handles.axes1);
+        diagram_kons(wart);
+end
+
+guidata(hObject,handles);
