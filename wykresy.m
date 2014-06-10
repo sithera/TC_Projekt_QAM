@@ -113,10 +113,12 @@ cla;
 max_freq = getappdata(0,'max_freq');
 ber_sim = getappdata(0,'ber_sim');
 wart = getappdata(0,'wart');
+data = getappdata(0,'bit_array');
+P = numel(data)/wart;
 
 popup_sel_index = get(handles.popupmenu1, 'Value');
 switch popup_sel_index
-    case 1
+    case 6
         grid off
         S = getappdata(0,'S');
         plot(S);
@@ -124,7 +126,7 @@ switch popup_sel_index
         ylabel('Amplitude');
         title('16-QAM Modulated Signal');
         axis([0 max_freq -10 10 ]) ;  %skala
-    case 2
+    case 7
         grid off
         SS = getappdata(0,'SS');
         plot(SS);
@@ -132,15 +134,15 @@ switch popup_sel_index
         ylabel('Amplitude');
         title('16-QAM Modulated Signal + Noise');
         axis([0 max_freq -10 10 ])   %skala
-    case 3
-        grid off
-        Sodt = getappdata(0,'Sodt');
-        plot(Sodt);
-        xlabel('Frequency [Hz]');
-        ylabel('Amplitude');
-        title('16-QAM Demodulated Signal');
-        axis([0 max_freq -10 10 ])   %skala
-    case 4
+%     case 3
+%         grid off
+%         Sodt = getappdata(0,'Sodt');
+%         plot(Sodt);
+%         xlabel('Frequency [Hz]');
+%         ylabel('Amplitude');
+%         title('16-QAM Demodulated Signal');
+%         axis([0 max_freq -10 10 ])   %skala
+    case 15
         k=log2(wart);
         EbNodB=1:15;
         EbNo=10.^(EbNodB/10);
@@ -157,12 +159,104 @@ switch popup_sel_index
         ylabel('Bit Error Rate');
         title('Bit error probability curve for 16-QAM modulation');
         hold off
-    case 5
+    case 16
         setappdata(0,'wykres',handles.axes1);
         BER();
-    case 6
+    case 17
         setappdata(0,'wykres',handles.axes1);
         diagram_kons(wart);
+    case 1
+        stairs(data)
+        axis([0 length(data) -2 2 ])
+        title('Input Data')
+        xlabel('Data Index')
+        ylabel('Value')
+    case 2
+        I = getappdata(0,'I');
+        stairs(I,'red')
+        axis([0 (length(data))/log2(wart) -8 8 ])
+        title('I after "Serial to paraler conver"')
+        xlabel('Data Index')
+        ylabel('Value')
+    case 3
+        Q = getappdata(0,'Q');
+        stairs(Q,'red')
+        axis([0 (length(data))/log2(wart) -8 8 ])
+        title('Q after "Serial to paraler convert"')
+        xlabel('Data Index')
+        ylabel('Value')
+    case 4
+        s11 = getappdata(0,'s11');
+        plot(s11)
+        
+        title('I after "D/A converter"')
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+    case 5
+        s12 = getappdata(0,'s12');
+        plot(s12)
+        
+        title('Q after "D/A converter"')
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+    case 8
+        Scos = getappdata(0,'Scos');
+        plot(Scos);
+        
+        title('Recived signal * cos (I)')
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+    case 9
+        BI = getappdata(0,'BI');
+        plot(BI);
+        
+        title('Recived signal * cos (I) after low-pass filter')
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+        
+    case 10
+        Ssin = getappdata(0,'Ssin');
+        plot(Ssin);
+        
+        title('Recived signal * sin (Q)')
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+        
+    case 11
+        BQ = getappdata(0,'BQ');
+        plot(BQ);
+        
+        title('Recived signal * sin (Q) after low-pass filter')
+        xlabel('Frequency [Hz]')
+        ylabel('Amplitude')
+        
+    case 12
+        Id = getappdata(0,'Id');
+        stairs(Id,'red');
+        axis([0 (length(data))/log2(wart) -8 8 ])
+        title('I after "A/D converter"')
+        xlabel('Data Index')
+        ylabel('Value')
+        
+    case 13
+        Qd = getappdata(0,'Qd');
+        stairs(Qd,'red');
+        axis([0 (length(data))/log2(wart) -8 8 ])
+        title('Q after "A/D converter"')
+        xlabel('Data Index')
+        ylabel('Value')
+        
+    case 14
+        dataWyj = getappdata(0,'dataWyj');
+        stairs(dataWyj);
+        axis([0 length(data) -2 2 ])
+        title('Output Data')
+        xlabel('Data Index')
+        ylabel('Value')
+        
+        
+        
+        
 end
 
 guidata(hObject,handles);
