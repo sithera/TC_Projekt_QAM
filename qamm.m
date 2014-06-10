@@ -22,6 +22,9 @@ else
     [I,Q]=qam64(data);
 end;
 
+setappdata(0,'I',I);
+setappdata(0,'Q',Q);
+
 %nasza funkcja
 P=(numel(data))/W;
 
@@ -31,12 +34,20 @@ fs=100000;
 f0=fc/fs;
 t=0:99;
 S=[];
+s11=[];
+s12=[];
 
 for i=1:1:P        % Modulacja
     s1=I(i)*cos(2*pi*f0*t);    %  fc/fs  ??
     s2=Q(i)*sin(2*pi*f0*t);
-    S=[S (s1-s2)];    %czysty
+    %S=[S (s1-s2)];    %czysty
+    s11=[s11 s1 ];
+    s12=[s12 s2 ];
 end
+
+setappdata(0,'s11',s11);
+setappdata(0,'s12',s12);
+S=s11-s12;
 
 T=(numel(t));
 TP=T*P;
@@ -60,7 +71,7 @@ for i=1:1:P    %dolno
 end
 % BI = Scos;
 % BQ = Ssin;
-[b,a]=butter(5,0.2);%(4,0.15);
+[b,a]=butter(4,0.15);%(4,0.15);
 BI=2*filtfilt(b,a,Scos);%2.*filter(b,a,Scos);
 BQ=2*filtfilt(b,a,Ssin);%2.*filter(b,a,Ssin);
 %subplot(3,1,2); plot(Scos) title('syg*cos')
@@ -75,6 +86,10 @@ end
 Id=[];
 Qd=[];
 
+setappdata(0,'Scos',Scos);
+setappdata(0,'Ssin',Ssin);
+setappdata(0,'BI',BI);
+setappdata(0,'BQ',BQ);
 setappdata(0,'IdSr',IdSr);
 setappdata(0,'QdSr',QdSr);
 
@@ -101,34 +116,80 @@ end
 err_sum = sum(abs(data - dataWyj));
 setappdata(0,'S',S);
 setappdata(0,'Sodt',Sodt);
+setappdata(0,'Id',Id);
+setappdata(0,'Qd',Qd);
+setappdata(0,'dataWyj',dataWyj);
 
-% figure(1)
-% axis([0 TP -7 7 ])
-% subplot(3,1,1);
+% figure(1)    %pocz¹tek
+% subplot(7,1,1);
+% stairs(data,'red')
+% axis([0 T -1 2 ])
+% title('wiadomosc')
+% 
+% subplot(7,1,2);
+% stairs(I,'red')
+% axis([0 P -8 8 ])
+% title('decyzyjny QAM I')
+% 
+% subplot(7,1,3);
+% stairs(Q,'red')
+% axis([0 P -8 8 ])
+% title('decyzyjny QAM Q')
+% 
+% subplot(7,1,4);
+% plot(s11)
+% title('I*cos')
+% 
+% subplot(7,1,5);
+% plot(s12)
+% title('Q*sin')
+% 
+% subplot(7,1,6);
 % plot(S)
-% title('16-QAM Modulated Signal')
-% axis([0 TP -10 10 ])   %skalaa
-% subplot(3,1,2);
-% plot(SS)   %
-% title('16-QAM Modulated Signal+Noise')
-% axis([0 TP -10 10 ])   %skalaa
-% subplot(3,1,3);
-% plot(Sodt)   %
-% title('Sygnal odtworzony')
-% axis([0 TP -10 10 ])   %skalaa
-%
+% title('Sygnal wysylany do kanalu')
+% 
+% subplot(7,1,7);
+% plot(SS)
+% title('Sygnal odebrany(z szumem)')
+% 
 % figure(2)
 % subplot(4,1,1);
 % plot(Ssin)
-% title('syg*sin')
+% title('syg*sin    Q')
+% 
 % subplot(4,1,2);
 % plot(BQ)
 % title('sin po filtrze')
-%
+% 
 % subplot(4,1,3);
 % plot(Scos)
-% title('syg*cos')
+% title('syg*cos    I')
 % subplot(4,1,4);
 % plot(BI)
 % title('cos po filtrze')
-%end
+% %end
+% 
+% 
+% 
+% 
+% figure(3)  %koniec
+% subplot(4,1,1);
+% plot(Sodt)
+% title('sygna³ odtworzony')
+% axis([0 TP -10 10 ])   %skalaa
+% 
+% subplot(4,1,2);
+% stairs(Id,'red')
+% axis([0 P -8 8 ])
+% title('decyzyjny QAM I')
+% 
+% subplot(4,1,3);
+% stairs(Qd,'red')
+% axis([0 P -8 8 ])
+% title('decyzyjny QAM Q')
+% 
+% subplot(4,1,4);
+% stairs(data,'red')
+% axis([0 T -1 2 ])  %
+% title('wiadomosc odtworzona')
+
