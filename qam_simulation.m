@@ -201,6 +201,7 @@ end
 
 setappdata(0,'ber_sim',ber_sim);
 setappdata(0,'wart',handles.wart);
+setappdata(0,'bit_array',handles.bit_array);
 
 
 wykresy();
