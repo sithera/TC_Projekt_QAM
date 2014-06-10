@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration target="target.mlapps" target-name="Package App" name="Symulator modulacji QAM" location="C:\Users\Eryk\Documents\GitHub\TC_Projekt_QAM" file="C:\Users\Eryk\Documents\GitHub\TC_Projekt_QAM\Symulator modulacji QAM.prj" build-checksum="2561275306">
+    <param.appname>Symulator modulacji QAM</param.appname>
+    <param.authnamewatermark>Eryk Leniart, Patryk Bogusz</param.authnamewatermark>
+    <param.email />
+    <param.company />
+    <param.icon>${PROJECT_ROOT}\Symulator modulacji QAM_24.png</param.icon>
+    <param.summary />
+    <param.description>Celem projektu jest opracowanie demonstratora modulacji QAM. W efekcie ma powstać aplikacja z graficznym interfejsem użytkownika, która pozwoli na obejrzenie kluczowych sygnałów w modulatorze / demodulatorze, symulację transmisji przez kanał AWGN, wizualizację oraz porównanie efektywności różnych konstelacji a także różnych wartościowości modulacji.</param.description>
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name>
+      <item>Signal Processing Toolbox</item>
+      <item>MATLAB</item>
+    </param.products.name>
+    <param.products.id>
+      <item>8</item>
+      <item>1</item>
+    </param.products.id>
+    <param.products.version>
+      <item>6.19</item>
+      <item>8.1</item>
+    </param.products.version>
+    <param.platforms />
+    <param.output>${PROJECT_ROOT}\Symulator modulacji QAM.mlappinstall</param.output>
+    <param.guid>f0adba35-e632-4156-864b-e88b09f2b53b</param.guid>
+    <unset>
+      <param.email />
+      <param.company />
+      <param.screenshot />
+      <param.version />
+      <param.platforms />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\qam_simulation.m</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\awgn1.m</file>
+      <file>${PROJECT_ROOT}\BER.m</file>
+      <file>${PROJECT_ROOT}\bit_generate.m</file>
+      <file>${PROJECT_ROOT}\dem2qam16.m</file>
+      <file>${PROJECT_ROOT}\dem2qam4.m</file>
+      <file>${PROJECT_ROOT}\dem2qam64.m</file>
+      <file>${PROJECT_ROOT}\demqam16.m</file>
+      <file>${PROJECT_ROOT}\demqam4.m</file>
+      <file>${PROJECT_ROOT}\demqam64.m</file>
+      <file>${PROJECT_ROOT}\diagram_kons.m</file>
+      <file>${PROJECT_ROOT}\qam16.m</file>
+      <file>${PROJECT_ROOT}\qam4.m</file>
+      <file>${PROJECT_ROOT}\qam64.m</file>
+      <file>${PROJECT_ROOT}\qam_simulation.fig</file>
+      <file>${PROJECT_ROOT}\qamm.m</file>
+      <file>${PROJECT_ROOT}\qamm_ber.m</file>
+      <file>${PROJECT_ROOT}\string_input.m</file>
+      <file>${PROJECT_ROOT}\string_output.m</file>
+      <file>${PROJECT_ROOT}\wykresy.fig</file>
+      <file>${PROJECT_ROOT}\wykresy.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file name="Symulator modulacji QAM.mlappinstall" location="C:\Users\Eryk\Documents\GitHub\TC_Projekt_QAM" optional="false">C:\Users\Eryk\Documents\GitHub\TC_Projekt_QAM\Symulator modulacji QAM.mlappinstall</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>D:\Program Files\MATLAB\R2013a</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+      </toolboxes>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.1</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
+
