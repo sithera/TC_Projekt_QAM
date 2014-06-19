@@ -39,15 +39,14 @@ for i=1:1:P        % Modulacja
 end
 
 T=(numel(t));
-TP=T*P;
-t1 = 1:1:length(S);
+
 
 % setappdata(0,'max_freq',TP);
 
 %AWGN                       t*P
 %snr=10;
 %SS = awgn(S,snr,'measured');
-Szum = awgn1( snr, S ,fs,fc);
+Szum = awgn1( snr, S ,fs,wart);
 SS=Szum+S;  % sygnal plus szum
 % setappdata(0,'SS_ber',SS);
 %%plot(t1,SS,'blue',t1,S,'red');
@@ -58,13 +57,11 @@ for i=1:1:P    %dolno
     Scos((i-1)*100+t+1)=SS((i-1)*100+t+1).*cos(2*pi*f0*t);
     Ssin((i-1)*100+t+1)=SS((i-1)*100+t+1).*sin(2*pi*f0*t);
 end
-% BI = Scos;
-% BQ = Ssin;
-[b,a]=butter(4,0.15);
-BI=2.*filter(b,a,Scos);
-BQ=2.*filter(b,a,Ssin);
-%subplot(3,1,2); plot(Scos) title('syg*cos')
-%subplot(3,1,3); plot(BI) title('po filtrze')
+
+[b,a]=butter(1,0.9999);
+BI=2*filter(b,a,Scos);
+BQ=2*filter(b,a,Ssin);
+
 
 IdSr=[ ];                      %DEModulacja
 QdSr=[ ];
@@ -88,44 +85,5 @@ else
 end;
 
 
-Sodt=[];
-for i=1:1:P        % odtworzony sygnal
-    sd1=Id(i)*cos(2*pi*f0*t);    %  fc/fs  ??
-    sd2=Qd(i)*sin(2*pi*f0*t);
-    Sodt=[Sodt (sd1-sd2)];    %czysty
-end
 
 err_sum = sum(abs(data - dataWyj));
-% setappdata(0,'S_ber',S);
-% setappdata(0,'Sodt_ber',Sodt);
-
-% figure(1)
-% axis([0 TP -7 7 ])
-% subplot(3,1,1);
-% plot(S)
-% title('16-QAM Modulated Signal')
-% axis([0 TP -10 10 ])   %skalaa
-% subplot(3,1,2);
-% plot(SS)   %
-% title('16-QAM Modulated Signal+Noise')
-% axis([0 TP -10 10 ])   %skalaa
-% subplot(3,1,3);
-% plot(Sodt)   %
-% title('Sygnal odtworzony')
-% axis([0 TP -10 10 ])   %skalaa
-% 
-% figure(2)
-% subplot(4,1,1);
-% plot(Ssin)
-% title('syg*sin')
-% subplot(4,1,2);
-% plot(BQ)
-% title('sin po filtrze')
-% 
-% subplot(4,1,3);
-% plot(Scos)
-% title('syg*cos')
-% subplot(4,1,4);
-% plot(BI)
-% title('cos po filtrze')
-%end
