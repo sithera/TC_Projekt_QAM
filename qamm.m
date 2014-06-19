@@ -51,14 +51,14 @@ S=s11-s12;
 
 T=(numel(t));
 TP=T*P;
-t1 = 1:1:length(S);
+
 
 setappdata(0,'max_freq',TP);
 
 %AWGN                       t*P
 %snr=10;
 %SS = awgn(S,snr,'measured');
-Szum = awgn1( snr, S ,fs,fc);
+Szum = awgn1( snr, S ,fs,wart);
 SS=Szum+S;  % sygnal plus szum
 setappdata(0,'SS',SS);
 %%plot(t1,SS,'blue',t1,S,'red');
@@ -69,13 +69,11 @@ for i=1:1:P    %dolno
     Scos((i-1)*100+t+1)=SS((i-1)*100+t+1).*cos(2*pi*f0*t);
     Ssin((i-1)*100+t+1)=SS((i-1)*100+t+1).*sin(2*pi*f0*t);
 end
-% BI = Scos;
-% BQ = Ssin;
-[b,a]=butter(4,0.15);%(4,0.15);
-BI=2*filtfilt(b,a,Scos);%2.*filter(b,a,Scos);
-BQ=2*filtfilt(b,a,Ssin);%2.*filter(b,a,Ssin);
-%subplot(3,1,2); plot(Scos) title('syg*cos')
-%subplot(3,1,3); plot(BI) title('po filtrze')
+
+[b,a]=butter(1,0.9999);
+BI=2*filter(b,a,Scos);
+BQ=2*filter(b,a,Ssin);
+
 
 IdSr=[ ];                      %DEModulacja
 QdSr=[ ];
@@ -106,90 +104,10 @@ else
 end;
 
 
-Sodt=[];
-for i=1:1:P        % odtworzony sygnal
-    sd1=Id(i)*cos(2*pi*f0*t);    %  fc/fs  ??
-    sd2=Qd(i)*sin(2*pi*f0*t);
-    Sodt=[Sodt (sd1-sd2)];    %czysty
-end
 
 err_sum = sum(abs(data - dataWyj));
 setappdata(0,'S',S);
-setappdata(0,'Sodt',Sodt);
 setappdata(0,'Id',Id);
 setappdata(0,'Qd',Qd);
 setappdata(0,'dataWyj',dataWyj);
-
-% figure(1)    %pocz¹tek
-% subplot(7,1,1);
-% stairs(data,'red')
-% axis([0 T -1 2 ])
-% title('wiadomosc')
-% 
-% subplot(7,1,2);
-% stairs(I,'red')
-% axis([0 P -8 8 ])
-% title('decyzyjny QAM I')
-% 
-% subplot(7,1,3);
-% stairs(Q,'red')
-% axis([0 P -8 8 ])
-% title('decyzyjny QAM Q')
-% 
-% subplot(7,1,4);
-% plot(s11)
-% title('I*cos')
-% 
-% subplot(7,1,5);
-% plot(s12)
-% title('Q*sin')
-% 
-% subplot(7,1,6);
-% plot(S)
-% title('Sygnal wysylany do kanalu')
-% 
-% subplot(7,1,7);
-% plot(SS)
-% title('Sygnal odebrany(z szumem)')
-% 
-% figure(2)
-% subplot(4,1,1);
-% plot(Ssin)
-% title('syg*sin    Q')
-% 
-% subplot(4,1,2);
-% plot(BQ)
-% title('sin po filtrze')
-% 
-% subplot(4,1,3);
-% plot(Scos)
-% title('syg*cos    I')
-% subplot(4,1,4);
-% plot(BI)
-% title('cos po filtrze')
-% %end
-% 
-% 
-% 
-% 
-% figure(3)  %koniec
-% subplot(4,1,1);
-% plot(Sodt)
-% title('sygna³ odtworzony')
-% axis([0 TP -10 10 ])   %skalaa
-% 
-% subplot(4,1,2);
-% stairs(Id,'red')
-% axis([0 P -8 8 ])
-% title('decyzyjny QAM I')
-% 
-% subplot(4,1,3);
-% stairs(Qd,'red')
-% axis([0 P -8 8 ])
-% title('decyzyjny QAM Q')
-% 
-% subplot(4,1,4);
-% stairs(data,'red')
-% axis([0 T -1 2 ])  %
-% title('wiadomosc odtworzona')
 
