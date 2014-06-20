@@ -22,7 +22,7 @@ function varargout = qam_simulation(varargin)
 
 % Edit the above text to modify the response to help qam_simulation
 
-% Last Modified by GUIDE v2.5 31-May-2014 22:30:27
+% Last Modified by GUIDE v2.5 20-Jun-2014 10:44:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,7 +60,9 @@ handles.slider1 = 1;
 handles.suwak = 1;
 set(handles.wartosc_suwaka,'String',1);
 handles.wart = 4;
-
+handles.slider_ber = 1;
+handles.suwak_ber = 1;
+set(handles.wartosc_suwaka_ber,'String',1);
 % Update handles structure
 guidata(hObject, handles);
 
@@ -130,7 +132,7 @@ bit_array = bit_generate(handles.wart,0);
 handles.bit_array = bit_array;
 handles.control = 0;
 set(handles.wyslany_tekst,'String',' ');
-stem(bit_array(1:20),'filled');
+stem(bit_array,'filled');
 set(gca,'XTick', [0:1:length(bit_array)], 'YTick', [0:1], 'XLim', [1 length(bit_array)], 'YLim', [0 1]);    
 set(gca,'XGrid', 'on');
 title(handles.bits,'Wygenerowane bity (pierwsze 20)');
@@ -195,13 +197,16 @@ end
 set(handles.ERR_COUNT,'String',['Liczba przek³amanych bitów: ' num2str(err_sum) '/' num2str(length(handles.bit_array)) ]);
 
 %%% BER %%%
-for snr=1:15
-    ber_sim(snr) = qamm_ber(snr,handles.bit_array_ber,handles.wart)/length(handles.bit_array_ber);
+i = 1;
+for snr=1:handles.suwak_ber:15
+    ber_sim(i) = qamm_ber(snr,handles.bit_array_ber,handles.wart)/length(handles.bit_array_ber);
+    i=i+1;
 end
 
 setappdata(0,'ber_sim',ber_sim);
 setappdata(0,'wart',handles.wart);
 setappdata(0,'bit_array',handles.bit_array);
+setappdata(0,'krok',handles.suwak_ber);
 
 
 wykresy();
@@ -265,3 +270,30 @@ bit_array_ber = bit_generate(handles.wart,1);
 handles.bit_array_ber = bit_array_ber;
 
 guidata(hObject,handles);
+
+
+% --- Executes on slider movement.
+function slider_ber_Callback(hObject, eventdata, handles)
+% hObject    handle to slider_ber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+handles.suwak_ber = get(hObject,'Value'); 
+set(handles.wartosc_suwaka_ber,'String',get(hObject,'Value'));
+
+guidata(hObject, handles); 
+
+
+% --- Executes during object creation, after setting all properties.
+function slider_ber_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider_ber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
