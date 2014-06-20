@@ -134,15 +134,17 @@ switch popup_sel_index
         axis([0 1200 -10 10 ])   %skala
         
     case 15
+        krok = getappdata(0,'krok');
         k=log2(wart);
         EbNodB=1:15;
+        EbNodB_krok = 1:krok:15;
         EbNo=10.^(EbNodB/10);
         M=2^k;
         x=sqrt(3*k*EbNo/(M-1));
         Pb=(4/k)*(1-1/sqrt(M))*(1/2)*erfc(x/sqrt(2));
         semilogy(EbNodB,Pb,'bs-','LineWidth',2);
         hold on
-        semilogy(EbNodB,ber_sim,'r*','LineWidth',2);
+        semilogy(EbNodB_krok,ber_sim,'r+','LineWidth',3);
         grid on
         axis([0 15 10^-6 1]);
         legend('theory', 'simulation');
