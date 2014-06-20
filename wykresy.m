@@ -142,9 +142,9 @@ switch popup_sel_index
         M=2^k;
         x=sqrt(3*k*EbNo/(M-1));
         Pb=(4/k)*(1-1/sqrt(M))*(1/2)*erfc(x/sqrt(2));
-        semilogy(EbNodB,Pb,'bs-','LineWidth',2);
+        semilogy(EbNodB,Pb,'b-','LineWidth',2);
         hold on
-        semilogy(EbNodB_krok,ber_sim,'r+','LineWidth',3);
+        semilogy(EbNodB_krok,ber_sim,'r+','LineWidth',2);
         grid on
         axis([0 15 10^-6 1]);
         legend('theory', 'simulation');
